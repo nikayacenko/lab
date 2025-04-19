@@ -1,0 +1,252 @@
+
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#define _USE_MATH_DEFINES 
+#include <math.h>
+using namespace std;
+const double PI = 2 * acos(0.0);
+const int n = 17;
+double gen(double a, double b) {
+	// Генерация случайного числа в [a, b]
+	return a + (b - a) * (rand() / static_cast<double>(RAND_MAX));
+}
+void gen_circle2(double R, int N) {
+	double p_step = 2 * PI / N;
+	for (int i = 0; i < N; i++) {
+		double p = i * p_step;
+		double x = R + R * cos(p);
+		double y = R + R * sin(p);
+		cout << to_string(x) << " " << to_string(y) << "\n";
+	}
+}
+double f1(double x) {
+	return 10 * x / n;
+}
+double f2(double x) {
+	return 10 * ((x - 20) / (n - 20)) + 20;
+}
+double max(vector<double> y) {
+	double max = y[0];
+	for (auto n : y) {
+		if (n > max) {
+			max = n;
+		}
+	}
+	return max;
+}
+double min(vector<double> y) {
+	double max = y[0];
+	for (auto n : y) {
+		if (n < max) {
+			max = n;
+		}
+	}
+	return max;
+}
+double fnumber2(double x) {
+	return sqrt(29 - n * pow(cos(x), 2));
+}
+double monte_carlo1(double miny, double maxy, int N) {
+	int M = 0;
+	for (int i = 0; i < N; i++) {
+		double x = gen(0.0, 5.0);
+		double y = gen(miny, maxy);
+		//cout <<to_string(x) << " " << to_string(y) <<" ";
+		//cout << fnumber2(x) << " "<< y<<" ";
+		if ( y < fnumber2(x))
+			M++;
+		//cout << M << "\n";
+	}
+	//cout << M << endl;
+	//cout << M << endl;
+	double S = double(M) / N * 5.0 * (maxy-miny);
+	return S;
+}
+
+double monte_carlo2(double a, double b, int N) {
+	double sum = 0.0;
+	double x;
+	for (int i = 0; i < N; ++i) {
+		x = a + (b - a) * (rand() / (double)RAND_MAX);
+		sum += fnumber2(x);
+	}
+	return (b - a) * (sum / N);
+}
+
+double integrate_simpson(double a, double b, int n) {
+	if (n % 2 != 0) ++n;
+	double h = (b - a) / n;
+	double sum = fnumber2(a) + fnumber2(b);
+	for (int i = 1; i < n; i += 2) {
+		sum += 4 * fnumber2(a + i * h);
+	}
+	for (int i = 2; i < n - 1; i += 2) {
+		sum += 2 * fnumber2(a + i * h);
+	}
+	return sum * h / 3.0;
+}
+
+bool insideCircle(double x, double y, double R) {
+	return pow(x - R, 2) + pow(y - R, 2) < R * R;
+}
+
+double gen_circle1(double R, int N) {
+	int M = 0;
+	for (int i = 0; i <= N; i++) {
+		double x = gen(0, 2 * R);
+		double y = gen(0, 2 * R);
+		cout << to_string(x) << " " << to_string(y) << endl;
+		if (insideCircle(x, y, R)) {
+			M++;
+		}
+	}
+	return 4.0 * M / N;
+}
+
+double PHi(double x, double y) {
+	if (x > 0) {
+		return atan(y / x);
+	}
+	else if (x < 0) {
+		return M_PI + atan(y / x);
+	}
+	else {
+		if (y > 0) {
+			return M_PI / 2;
+		}
+		else if (y < 0) {
+			return -M_PI / 2;
+		}
+		else {
+			return 0;
+		}
+	}
+}
+double r(double q) {
+	return sqrt((n + 10) * pow(cos(q), 2) + (n - 10) * pow(sin(q), 2));
+}
+double gen5(double a, double b, int N) {
+	int M = 0;
+	for (int i = 0; i < N; i++) {
+		double x = (double)rand() / RAND_MAX;
+		double y = (double)rand() / RAND_MAX;
+		x *= (a);
+		y *= (b);
+		(rand() % 2) ? x *= -1 : x *= 1;
+		(rand() % 2) ? y *= -1 : y *= 1;
+		cout << to_string(x) << " " << to_string(y) << "\n";
+		double q = PHi(x, y);
+		if (sqrt(pow(x, 2) + pow(y, 2)) < r(q))
+			M++;
+	}
+	return M;
+}
+
+void gen4(double &a, double &b, int N) {
+	double p_step = 2 * PI / N;
+	double R;
+	a = 0;
+	b = 0;
+	for (int i = 0; i <= N; i++) {
+		double p = i * p_step;
+		R = r(p);
+		double x = R * cos(p);
+		double y = R * sin(p);
+		if (x > a)
+			a = x;
+		if (y > b)
+			b = y;
+		cout << to_string(x) << " " << to_string(y) << "\n";
+	}
+	cout << a << " " << b << "\n";
+}
+double intS(double q) {
+	return (3 * sin(2 * q) + 22 * q) / 2;
+}
+int main() {
+	setlocale(LC_ALL, "Ru");
+	int N = 100;
+	double step = 1.0;
+	srand(time(0));
+	cout << "№1:\n 1)Значения f:\n";
+	/*int n;
+	cout << "введите количество точек: ";
+	cin >> n;*/
+	vector<double>y1(22);
+	vector<double>y2(22);
+	for (double i = 0; i < y1.size(); i++) {
+		cout << step * i << " " << f1(step * i) << " " << f2(step * i) << "\n";
+		y1[i] = f1(step * i);
+		y2[i] = f2(step * i);
+	}
+	double a = 22.1, b = max(y2);
+	cout << "размер прямоугольнка: " << a << " " << b << "\n";
+	cout << "количество случайных точек N: " << N << "\n";
+	int M = 0;
+	//cout << "сгенерированные точки: " << "\n";
+	for (int i = 0; i < N; i++) {
+		double x = gen(0.0, a);
+		double y = gen(0.0, b);
+		//cout <<to_string(x) << " " << to_string(y) <<" ";
+		//cout << f1(x) << " " << f2(x) << " "<< y<<" ";
+		if (f1(x) < y && y<f2(x))
+			M++;
+		//cout << M << "\n";
+	}
+	//cout << M << endl;
+	double S = double(M) / N * a * b;
+	cout << "приближенное вычисление площади по Монте-Карло: "<<S<<"\n";
+	double S_exact = 957.667035;
+	double abs_error = fabs(S - S_exact);
+	double rel_error = abs_error / S_exact;
+	cout << "точное значение площади: " << S_exact << "\n";
+	cout << "абсолютная погрешность: " << abs_error << "\n";
+	cout << "относительная погрешность: " << rel_error << "\n";
+
+	//2 задание
+	y1.resize(1000, 0);
+	cout << "№2: \n";
+	for (double i = 0; i < y1.size(); i++) {
+		//cout << step * i << " " << f1(step * i) << " " << f2(step * i) << "\n";
+		y1[i] = fnumber2(step * i);
+	}
+	cout <<"интервал для y: "<< min(y1) << " " << max(y1) << "\n";
+	cout <<"приближенное вычисление площади по Монте-Карло по первой формуле: " << monte_carlo1(3, 6, N) << "\n";
+	cout << "приближенное вычисление площади по Монте-Карло по второй формуле: " << monte_carlo2(3, 5, N) << "\n";
+	cout << "приближенное вычисление площади по методу Симпсона: " << integrate_simpson(3,5, N) << "\n";
+	abs_error = abs(monte_carlo2(3, 5, N) - integrate_simpson(3, 5, N));
+	cout << "aбсолютная погрешность: " << abs_error << "\n";
+	rel_error = abs_error / integrate_simpson(3, 5, N);
+	cout << "относительная погрешность: " << rel_error << "\n";
+
+
+	//3 задание
+	cout << "№3: \n";
+	double R = 17;
+	double g = gen_circle1(R, N);
+	gen_circle2(R, N);
+	cout << "приближенное значение: " << g << "\n";
+	cout << "точное значение: " << PI << "\n";
+	cout << "погрешность: " << abs(g - PI) << "\n";
+
+	//4 задание
+	cout << "№4: \n";
+	int A = n + 10, B = n - 10;
+	gen4(a, b, N);
+	//5.19615 3.0173 a b
+	cout << endl;
+	M = gen5(a, b, N);
+	cout << " Количество точек, лежащих внутри фигуры: " << M << '\n';
+	cout << " Размеры прямоугольника, в котором лежит фигура S: " << a * 2 << ", " << b * 2 << '\n';
+	//все что ниже надо еще перепроверить инфа неточная
+	double s = (intS(2 * M_PI) - intS(0)) / 2;
+	S = (double)M / N;
+	S *= a * 2 * 2 * b;
+	cout << " Точная площадь: " << s << '\n' << " Приближенно вычисленная площадь фигуры: " << S << '\n';
+	abs_error = abs(s - S);
+	rel_error = abs_error / s;
+	cout << " Абсолютная погрешность: " << abs_error << '\n' << " Относительная погрешность: " << rel_error << '\n';
+}
