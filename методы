@@ -13,7 +13,6 @@ double gen(double a, double b) {
 	return a + (b - a) * (rand() / static_cast<double>(RAND_MAX));
 }
 void gen_circle2(double R, int N) {
-	cout << 2 << endl;
 	double p_step = 2 * PI / N;
 	for (int i = 0; i < N; i++) {
 		double p = i * p_step;
@@ -54,15 +53,14 @@ double monte_carlo1(double miny, double maxy, int N) {
 	for (int i = 0; i < N; i++) {
 		double x = gen(0.0, 5.0);
 		double y = gen(miny, maxy);
-		//cout <<to_string(x) << " " << to_string(y) <<" ";
+		//cout <<to_string(x) << " " << to_string(y) <<endl;
 		//cout << fnumber2(x) << " "<< y<<" ";
-		if ( y < fnumber2(x))
+		if (y < fnumber2(x))
 			M++;
 		//cout << M << "\n";
 	}
 	//cout << M << endl;
-	//cout << M << endl;
-	double S = double(M) / N * 5.0 * (maxy-miny);
+	double S = double(M) / N * 5.0 * (maxy - miny);
 	return S;
 }
 
@@ -95,7 +93,6 @@ bool insideCircle(double x, double y, double R) {
 
 double gen_circle1(double R, int N) {
 	int M = 0;
-	cout << 1 << endl;
 	for (int i = 0; i <= N; i++) {
 		double x = gen(0, 2 * R);
 		double y = gen(0, 2 * R);
@@ -128,8 +125,8 @@ double PHi(double x, double y) {
 	}
 }
 double r(double q) {
-	return sqrt((n - 10) * pow(cos(q), 2) + (n - 10) * pow(sin(q), 2));
-		//sqrt(pow(cos(q), 2) + pow(sin(q), 2));
+	return sqrt((n + 10) * pow(cos(q), 2) + (n - 10) * pow(sin(q), 2));
+	//sqrt(pow(cos(q), 2) + pow(sin(q), 2));
 }
 double gen5(double a, double b, int N) {
 	int M = 0;
@@ -140,7 +137,7 @@ double gen5(double a, double b, int N) {
 		y *= (b);
 		(rand() % 2) ? x *= -1 : x *= 1;
 		(rand() % 2) ? y *= -1 : y *= 1;
-		cout << to_string(x) << " " << to_string(y) << "\n";
+		//cout << to_string(x) << " " << to_string(y) << "\n";
 		double q = PHi(x, y);
 		if (sqrt(pow(x, 2) + pow(y, 2)) < r(q))
 			M++;
@@ -148,7 +145,7 @@ double gen5(double a, double b, int N) {
 	return M;
 }
 
-void gen4(double &a, double &b, int N) {
+void gen4(double& a, double& b, int N) {
 	double p_step = 2 * PI / N;
 	double R;
 	a = 0;
@@ -162,12 +159,12 @@ void gen4(double &a, double &b, int N) {
 			a = x;
 		if (y > b)
 			b = y;
-		cout << to_string(x) << " " << to_string(y) << "\n";
+		//cout << to_string(x) << " " << to_string(y) << "\n";
 	}
 	//cout << a << " " << b << "\n";
 }
 double intS(double q) {
-	return (3 * sin(2 * q) + 22 * q) / 2;
+	return 17*q+5*sin(2*q);
 }
 int main() {
 	setlocale(LC_ALL, "Ru");
@@ -195,13 +192,13 @@ int main() {
 		double y = gen(0.0, b);
 		//cout <<to_string(x) << " " << to_string(y) <<" ";
 		//cout << f1(x) << " " << f2(x) << " "<< y<<" ";
-		if (f1(x) < y && y<f2(x))
+		if (f1(x) < y && y < f2(x))
 			M++;
 		//cout << M << "\n";
 	}
 	//cout << M << endl;
 	double S = double(M) / N * a * b;
-	cout << "приближенное вычисление площади по Монте-Карло: "<<S<<"\n";
+	cout << "приближенное вычисление площади по Монте-Карло: " << S << "\n";
 	double S_exact = 957.667035;
 	double abs_error = fabs(S - S_exact);
 	double rel_error = abs_error / S_exact;
@@ -216,10 +213,10 @@ int main() {
 		//cout << step * i << " " << f1(step * i) << " " << f2(step * i) << "\n";
 		y1[i] = fnumber2(step * i);
 	}
-	cout <<"интервал для y: "<< min(y1) << " " << max(y1) << "\n";
-	cout <<"приближенное вычисление площади по Монте-Карло по первой формуле: " << monte_carlo1(3, 6, N) << "\n";
+	cout << "интервал для y: " << min(y1) << " " << max(y1) << "\n";
+	cout << "приближенное вычисление площади по Монте-Карло по первой формуле: " << monte_carlo1(3, 6, N) << "\n";
 	cout << "приближенное вычисление площади по Монте-Карло по второй формуле: " << monte_carlo2(3, 5, N) << "\n";
-	cout << "приближенное вычисление площади по методу Симпсона: " << integrate_simpson(3,5, N) << "\n";
+	cout << "приближенное вычисление площади по методу Симпсона: " << integrate_simpson(3, 5, N) << "\n";
 	abs_error = abs(monte_carlo2(3, 5, N) - integrate_simpson(3, 5, N));
 	cout << "aбсолютная погрешность: " << abs_error << "\n";
 	rel_error = abs_error / integrate_simpson(3, 5, N);
@@ -237,14 +234,15 @@ int main() {
 
 	//4 задание
 	cout << "№4: \n";
-	int A = n - 10, B = n - 10;
+	N = 100;
+	int A = n + 10, B = n - 10;
 	gen4(a, b, N);
 	cout << endl;
 	M = gen5(a, b, N);
 	cout << " Количество точек, лежащих внутри фигуры: " << M << '\n';
 	cout << " Размеры прямоугольника, в котором лежит фигура S: " << a * 2 << ", " << b * 2 << '\n';
 	//все что ниже надо еще перепроверить инфа неточная
-	double s = (intS(2 * M_PI) - intS(0)) / 2;
+	double s = (intS(2 * PI) - intS(0)) / 2;
 	//double s = PI;
 	S = (double)M / N;
 	S *= a * 2 * 2 * b;
@@ -255,111 +253,111 @@ int main() {
 }
 
 
-#include <iostream>
-#include <cmath>
-#include <iomanip> // Для форматированного вывода
-#include <chrono>  // Для измерения времени
-using namespace std;
-
-const double PI = 2 * acos(0.0);
-double erf_res(double a, int n=1000) {
-	double h = a / n, res=0;
-	res += (exp(-0*0))/2;
-	res += (exp(-a*a))/2;
-	for (int i = 1; i < n-1; ++i) {
-		double t = i * h;
-		res += exp(-t * t);
-	}
-	return 2*(1/sqrt(PI))*h * res;
-}
-
-// Функция для вычисления y'(x)
-double dydx(double x) {
-	return (2.0 / sqrt(PI)) * exp(-x * x);
-}
-
-// Численное решение erf(x) методом Эйлера
-double erf_euler(double x, double h) {
-	double y = 0.0; // y(0) = 0
-	double current_x = 0.0;
-
-	while (current_x < x) {
-		y += h * dydx(current_x);
-		current_x += h;
-	}
-	return y;
-}
-
-// Структура для представления состояния системы (кролики, лисы)
-struct State {
-	double rabbits;
-	double foxes;
-};
-
-// Функция, вычисляющая производные (правые части дифференциальных уравнений)
-State derivatives(const State& state, double a) {
-	State d;
-	d.rabbits = 2 * state.rabbits - a * state.rabbits * state.foxes;
-	d.foxes = -state.foxes + a * state.rabbits * state.foxes;
-	return d;
-}
-
-// Функция, реализующая метод Рунге-Кутты 4-го порядка (RK4)
-State rk4_step(const State& state, double t, double dt, double a) {
-	State k1 = derivatives(state, a);
-	State k2;
-	k2.rabbits = 2 * (state.rabbits + dt / 2 * k1.rabbits) - a * (state.rabbits + dt / 2 * k1.rabbits) * (state.foxes + dt / 2 * k1.foxes);
-	k2.foxes = -(state.foxes + dt / 2 * k1.foxes) + a * (state.rabbits + dt / 2 * k1.rabbits) * (state.foxes + dt / 2 * k1.foxes);
-	State k3;
-	k3.rabbits = 2 * (state.rabbits + dt / 2 * k2.rabbits) - a * (state.rabbits + dt / 2 * k2.rabbits) * (state.foxes + dt / 2 * k2.foxes);
-	k3.foxes = -(state.foxes + dt / 2 * k2.foxes) + a * (state.rabbits + dt / 2 * k2.rabbits) * (state.foxes + dt / 2 * k2.foxes);
-	State k4 = derivatives({ state.rabbits + dt * k3.rabbits, state.foxes + dt * k3.foxes }, a); // Используем производную функцию
-
-	State next_state;
-	next_state.rabbits = state.rabbits + dt / 6 * (k1.rabbits + 2 * k2.rabbits + 2 * k3.rabbits + k4.rabbits);
-	next_state.foxes = state.foxes + dt / 6 * (k1.foxes + 2 * k2.foxes + 2 * k3.foxes + k4.foxes);
-
-	return next_state;
-}
-
-
-int main() {
-	setlocale(LC_ALL, "Ru");
-	double h = 0.01;
-	//1
-	for (double i = 0.0; i <= 2.0; i += 0.1) {
-		auto start_euler = chrono::high_resolution_clock::now();
-		double erf_euler_value = erf_euler(i, h);
-		auto stop_euler = chrono::high_resolution_clock::now();
-		auto duration_euler = chrono::duration_cast<chrono::microseconds>(stop_euler - start_euler);
-
-		// Измерение времени выполнения метода численных квадратур
-		auto start_quadrature = chrono::high_resolution_clock::now();
-		double erf_quadrature_value = erf_res(i);
-		auto stop_quadrature = chrono::high_resolution_clock::now();
-		auto duration_quadrature = chrono::duration_cast<chrono::microseconds>(stop_quadrature - start_quadrature);
-		//cout << i << " " << erf_res(i) << " " << erf_euler(i, h) << " " << erf(i) << endl;
-		cout << fixed << setprecision(4)
-			<< i << "\t "
-			<< erf_euler_value << "\t "
-			<< duration_euler.count() << "\t "
-			<< erf_quadrature_value << "\t "
-			<< duration_quadrature.count()<<"\t"
-			<< erf(i) << endl;
-	}
-
-	double a = 0.01;
-	double r0 = 15, f0 = 22;
-	double dt = 0.01; // Шаг по времени
-	double t_end = 50.0; // Конечное время
-	double t = 0;
-	State cur_state = { r0,f0 };
-	cout << "times" << "\t" << "rabbits" << "\t" << "foxes" << "\n";
-	while (t <= t_end) {
-		cout << t << "\t" << cur_state.rabbits << "\t" << cur_state.foxes << "\n";
-		cur_state = rk4_step(cur_state, t, dt, a);
-		t += 0.1;
-		//cur_state.rabbits = max(0.0, cur_state.rabbits);
-		//cur_state.foxes = max(0.0, cur_state.foxes);
-	}
-}
+//#include <iostream>
+//#include <cmath>
+//#include <iomanip> // Для форматированного вывода
+//#include <chrono>  // Для измерения времени
+//using namespace std;
+//
+//const double PI = 2 * acos(0.0);
+//double erf_res(double a, int n = 1000) {
+//	double h = a / n, res = 0;
+//	res += (exp(-0 * 0)) / 2;
+//	res += (exp(-a * a)) / 2;
+//	for (int i = 1; i < n - 1; ++i) {
+//		double t = i * h;
+//		res += exp(-t * t);
+//	}
+//	return 2 * (1 / sqrt(PI)) * h * res;
+//}
+//
+//// Функция для вычисления y'(x)
+//double dydx(double x) {
+//	return (2.0 / sqrt(PI)) * exp(-x * x);
+//}
+//
+//// Численное решение erf(x) методом Эйлера
+//double erf_euler(double x, double h) {
+//	double y = 0.0; // y(0) = 0
+//	double current_x = 0.0;
+//
+//	while (current_x < x) {
+//		y += h * dydx(current_x);
+//		current_x += h;
+//	}
+//	return y;
+//}
+//
+//// Структура для представления состояния системы (кролики, лисы)
+//struct State {
+//	double rabbits;
+//	double foxes;
+//};
+//
+//// Функция, вычисляющая производные (правые части дифференциальных уравнений)
+//State derivatives(const State& state, double a) {
+//	State d;
+//	d.rabbits = 2 * state.rabbits - a * state.rabbits * state.foxes;
+//	d.foxes = -state.foxes + a * state.rabbits * state.foxes;
+//	return d;
+//}
+//
+//// Функция, реализующая метод Рунге-Кутты 4-го порядка (RK4)
+//State rk4_step(const State& state, double t, double dt, double a) {
+//	State k1 = derivatives(state, a);
+//	State k2;
+//	k2.rabbits = 2 * (state.rabbits + dt / 2 * k1.rabbits) - a * (state.rabbits + dt / 2 * k1.rabbits) * (state.foxes + dt / 2 * k1.foxes);
+//	k2.foxes = -(state.foxes + dt / 2 * k1.foxes) + a * (state.rabbits + dt / 2 * k1.rabbits) * (state.foxes + dt / 2 * k1.foxes);
+//	State k3;
+//	k3.rabbits = 2 * (state.rabbits + dt / 2 * k2.rabbits) - a * (state.rabbits + dt / 2 * k2.rabbits) * (state.foxes + dt / 2 * k2.foxes);
+//	k3.foxes = -(state.foxes + dt / 2 * k2.foxes) + a * (state.rabbits + dt / 2 * k2.rabbits) * (state.foxes + dt / 2 * k2.foxes);
+//	State k4 = derivatives({ state.rabbits + dt * k3.rabbits, state.foxes + dt * k3.foxes }, a); // Используем производную функцию
+//
+//	State next_state;
+//	next_state.rabbits = state.rabbits + dt / 6 * (k1.rabbits + 2 * k2.rabbits + 2 * k3.rabbits + k4.rabbits);
+//	next_state.foxes = state.foxes + dt / 6 * (k1.foxes + 2 * k2.foxes + 2 * k3.foxes + k4.foxes);
+//
+//	return next_state;
+//}
+//
+//
+//int main() {
+//	setlocale(LC_ALL, "Ru");
+//	double h = 0.01;
+//	//1
+//	for (double i = 0.0; i <= 2.0; i += 0.1) {
+//		auto start_euler = chrono::high_resolution_clock::now();
+//		double erf_euler_value = erf_euler(i, h);
+//		auto stop_euler = chrono::high_resolution_clock::now();
+//		auto duration_euler = chrono::duration_cast<chrono::microseconds>(stop_euler - start_euler);
+//
+//		// Измерение времени выполнения метода численных квадратур
+//		auto start_quadrature = chrono::high_resolution_clock::now();
+//		double erf_quadrature_value = erf_res(i);
+//		auto stop_quadrature = chrono::high_resolution_clock::now();
+//		auto duration_quadrature = chrono::duration_cast<chrono::microseconds>(stop_quadrature - start_quadrature);
+//		//cout << i << " " << erf_res(i) << " " << erf_euler(i, h) << " " << erf(i) << endl;
+//		cout << fixed << setprecision(4)
+//			<< i << "\t "
+//			<< erf_euler_value << "\t "
+//			<< duration_euler.count() << "\t "
+//			<< erf_quadrature_value << "\t "
+//			<< duration_quadrature.count() << "\t"
+//			<< erf(i) << endl;
+//	}
+//
+//	double a = 0.01;
+//	double r0 = 15, f0 = 22;
+//	double dt = 0.01; // Шаг по времени
+//	double t_end = 50.0; // Конечное время
+//	double t = 0;
+//	State cur_state = { r0,f0 };
+//	cout << "times" << "\t" << "rabbits" << "\t" << "foxes" << "\n";
+//	while (t <= t_end) {
+//		cout << t << "\t" << cur_state.rabbits << "\t" << cur_state.foxes << "\n";
+//		cur_state = rk4_step(cur_state, t, dt, a);
+//		t += 0.1;
+//		//cur_state.rabbits = max(0.0, cur_state.rabbits);
+//		//cur_state.foxes = max(0.0, cur_state.foxes);
+//	}
+//}
