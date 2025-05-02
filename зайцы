@@ -1,0 +1,157 @@
+//#include <iostream>
+//#include <fstream>
+//#include <vector>
+//#include <string>
+//#include <chrono>;
+//#include <algorithm>
+//#include <iomanip>
+//#define _USE_MATH_DEFINES 
+//#include <math.h>
+//using namespace std;
+//using namespace std::chrono;
+//
+//const double PI = 2 * acos(0.0);
+//double erf_res(double a, int n=1000) {
+//	double h = a / n, res=0;
+//	res += (exp(-0*0))/2;
+//	res += (exp(-a*a))/2;
+//	for (int i = 1; i < n-1; ++i) {
+//		double t = i * h;
+//		res += exp(-t * t);
+//	}
+//	return 2*(1/sqrt(PI))*h * res;
+//}
+//
+//// Функция для вычисления y'(x)
+//double dydx(double x) {
+//	return (2.0 / sqrt(PI)) * exp(-x * x);
+//}
+//
+//// Численное решение erf(x) методом Эйлера
+//double erf_euler(double x, double h) {
+//	double y = 0.0; // y(0) = 0
+//	double current_x = 0.0;
+//
+//	while (current_x < x) {
+//		y += h * dydx(current_x);
+//		current_x += h;
+//	}
+//	return y;
+//}
+//
+//// Структура для представления состояния системы (кролики, лисы)
+//struct State {
+//	double rabbits;
+//	double foxes;
+//};
+//
+//// Функция, вычисляющая производные (правые части дифференциальных уравнений)
+//State derivatives(const State& state, double a) {
+//	State d;
+//	d.rabbits = 2 * state.rabbits - a * state.rabbits * state.foxes;
+//	d.foxes = -state.foxes + a * state.rabbits * state.foxes;
+//	return d;
+//}
+//
+//// Функция, реализующая метод Рунге-Кутты 4-го порядка (RK4)
+//State rk4_step(const State& state, double t, double dt, double a) {
+//	State k1 = derivatives(state, a);
+//	State k2;
+//	k2.rabbits = 2 * (state.rabbits + dt / 2 * k1.rabbits) - a * (state.rabbits + dt / 2 * k1.rabbits) * (state.foxes + dt / 2 * k1.foxes);
+//	k2.foxes = -(state.foxes + dt / 2 * k1.foxes) + a * (state.rabbits + dt / 2 * k1.rabbits) * (state.foxes + dt / 2 * k1.foxes);
+//	State k3;
+//	k3.rabbits = 2 * (state.rabbits + dt / 2 * k2.rabbits) - a * (state.rabbits + dt / 2 * k2.rabbits) * (state.foxes + dt / 2 * k2.foxes);
+//	k3.foxes = -(state.foxes + dt / 2 * k2.foxes) + a * (state.rabbits + dt / 2 * k2.rabbits) * (state.foxes + dt / 2 * k2.foxes);
+//	//State k4 = derivatives({ state.rabbits + dt * k3.rabbits, state.foxes + dt * k3.foxes }, a); // Используем производную функцию
+//	State k4;
+//	k4.rabbits = 2 * (state.rabbits + dt * k3.rabbits) - a * (state.rabbits + dt * k3.rabbits) * (state.foxes + dt * k3.foxes);
+//	k4.foxes = -(state.foxes + dt * k3.foxes) + a * (state.rabbits + dt * k3.rabbits) * (state.foxes + dt * k3.foxes);
+//	State next_state;
+//	next_state.rabbits = state.rabbits + dt / 6 * (k1.rabbits + 2 * k2.rabbits + 2 * k3.rabbits + k4.rabbits);
+//	next_state.foxes = state.foxes + dt / 6 * (k1.foxes + 2 * k2.foxes + 2 * k3.foxes + k4.foxes);
+//
+//	return next_state;
+//}
+//
+//
+//int main() {
+//	setlocale(LC_ALL, "Ru");
+//	double h = 0.01;
+//	//1
+//	for (double i = 0.0; i <= 2.0; i += 0.1) {
+//		auto start_euler = chrono::high_resolution_clock::now();
+//		double erf_euler_value = erf_euler(i, h);
+//		auto stop_euler = chrono::high_resolution_clock::now();
+//		auto duration_euler = chrono::duration_cast<chrono::microseconds>(stop_euler - start_euler);
+//
+//		// Измерение времени выполнения метода численных квадратур
+//		auto start_quadrature = chrono::high_resolution_clock::now();
+//		double erf_quadrature_value = erf_res(i);
+//		auto stop_quadrature = chrono::high_resolution_clock::now();
+//		auto duration_quadrature = chrono::duration_cast<chrono::microseconds>(stop_quadrature - start_quadrature);
+//		//cout << i << " " << erf_res(i) << " " << erf_euler(i, h) << " " << erf(i) << endl;
+//		cout << fixed << setprecision(4)
+//			<< i << "\t "
+//			<< erf_euler_value << "\t "
+//			<< duration_euler.count() << "\t "
+//			<< erf_quadrature_value << "\t "
+//			<< duration_quadrature.count()<<"\t"
+//			<< erf(i) << endl;
+//	}
+//
+//	vector<double> R = { 2, 100, 1000, 1500 };
+//	vector<double> F = { 2, 100, 1000, 1000 };
+//	double a = 0.01;
+//	cout << " Параметр a = " << a << '\n';
+//	int index = 0;
+//	for (auto r0 : R) {
+//		int f0 = F[index];
+//		index++;
+//		cout << " r0 = " << r0 << ", f0 = " << f0 << "\n";
+//		State cur_state = { r0,f0 };
+//		double t = 0.0;
+//		int N = 50;
+//		double dt = 0.1;
+//		for (int i = 0; i < N; i++) {
+//
+//			cout << to_string(t) << " " << to_string(cur_state.rabbits) << " " << to_string(cur_state.foxes) << '\n';
+//
+//			cur_state = rk4_step(cur_state, t, dt, a);
+//			t += dt;
+//		}
+//	}
+//	cout << "\n B)\n";
+//	cout << " 1) Вымирают кролики:\n r0 = 15, f0 = 22:\n";
+//	State cur_state;
+//	cur_state.rabbits = 15;
+//	cur_state.foxes = 22;
+//	double t = 0;
+//	int N = 50;
+//	double dt = 0.1;
+//	while (true) {
+//		cout << to_string(t) << " " << to_string(cur_state.rabbits) << " " << to_string(cur_state.foxes) << '\n';
+//		cur_state = rk4_step(cur_state, t, dt, a);
+//		t += dt;
+//		if (cur_state.rabbits < 1)
+//			break;
+//	}
+//	cout << endl;
+//	cout << " r = " << cur_state.rabbits << ", f = " << cur_state.foxes << '\n';
+//
+//
+//
+//	//double a = 0.01;
+//	//double r0 = 15, f0 = 22;
+//	//double dt = 0.01; // Шаг по времени
+//	//double t_end = 50.0; // Конечное время
+//	//double t = 0;
+//	//State cur_state = { r0,f0 };
+//	//cout << "times" << "\t" << "rabbits" << "\t" << "foxes" << "\n";
+//	//while (t <= t_end) {
+//	//	cout << t << "\t" << cur_state.rabbits << "\t" << cur_state.foxes << "\n";
+//	//	cur_state = rk4_step(cur_state, t, dt, a);
+//	//	t += 0.1;
+//	//	//cur_state.rabbits = max(0.0, cur_state.rabbits);
+//	//	//cur_state.foxes = max(0.0, cur_state.foxes);
+//	//}
+//}
