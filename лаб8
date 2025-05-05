@@ -1,0 +1,127 @@
+//ЛАБ8
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <chrono>;
+#include <algorithm>
+#include <iomanip>
+#define _USE_MATH_DEFINES 
+#include <math.h>
+#include <functional>
+using namespace std;
+using namespace std::chrono;
+
+const double PI = acos(-1);
+
+
+double erf_res(double a, int n=1000) {
+	double h = a / n, res=0;
+	res += (exp(-0*0))/2;
+	res += (exp(-a*a))/2;
+	for (int i = 1; i < n-1; ++i) {
+		double t = i * h;
+		res += exp(-t * t);
+	}
+	return 2*(1/sqrt(PI))*h * res;
+}
+double bisection(function<double(double)> f, double a, double b, double tol = 1e-6) {
+	if (f(a) * f(b) >= 0) {
+		std::cerr << "Ошибка: f(a) и f(b) должны иметь разные знаки.\n";
+		return NAN;
+	}
+	double c;
+	while ((b - a) >= tol) {
+		c = (a + b) / 2;
+		if (f(c) == 0.0) break;
+		else if (f(c) * f(a) < 0) b = c;
+		else a = c;
+	}
+	return c;
+}
+double p1(double x)
+{
+	return erf_res(x, 100) - 0.5;
+}
+double equ(double x) {
+	return erf_res(x) - 0.5;
+}
+
+void cardano(double a) {
+	double p = a * a - 3.0;
+	double q = 2.0 * a * a + 2.0;
+	double s = sqrt(pow(p / 3.0, 3) + pow(q / 2.0, 2));
+	double y1 = cbrt(-q / 2.0 + s) + cbrt(-q / 2.0 - s);
+	double x1 = y1 - 1.0;
+	double Q = pow(p / 3.0, 3) + pow(q / 2.0, 2);
+	if (Q > 0) {
+		double A = cbrt(-q / 2.0 + sqrt(Q));
+		double b = cbrt(-q / 2.0 - sqrt(Q));
+		double y21 = (-A - b) / 2.0 - 3.0/3;
+		double y22 = (A - b) / 2.0 * sqrt(3.0);
+		cout << x1 << "\n";
+		cout << y21 << "+i" << y22<<"\n";
+		cout << y21 << "-i" << y22<<"\n";
+	}
+}
+
+double f(double x, double alpha)
+{
+	return pow(x, 3) + 3.0 * pow(x, 2) + pow(alpha, 2) * x + 3.0 * pow(alpha, 2);
+}
+
+double p(double x, double alpha)
+{
+	return 3.0 * pow(x, 2) + 6.0 * x + pow(alpha, 2);
+}
+
+double newton(double x0,double alpha)
+{
+	double x = x0;
+	double res = 0;
+	int iter = 0;
+	while (1)
+	{
+		iter++;
+		res = x - (f(x, alpha) / p(x, alpha));
+		if (abs(res - x) < 0.0001) {
+			cout << " количество итераций: " << iter << ",";
+			return res;
+		}
+		x = res;
+	}
+	cout << " количество итераций: " << iter << ",";
+	return x;
+}
+
+int main() {
+	setlocale(LC_ALL, "Ru");
+	cout << "№1 \n";
+	double solution = bisection(equ, 0.0, 1.0);
+	cout << "решение: x = " << solution << "\n";
+	cout << fixed << "проверка erf(0.4777414)-0.5: " << erf(0.477414) - 0.5 << "\n";
+	cout << "№2 \n";
+	vector<double>A = { 1, 1000, 4.5e+15 / 4, 4.5e+15 / 2, 1.0 / 2.22e-16 };
+	double a = 1;
+	double x01 = -3;
+	double x02 = 1000;
+	double x03 = 1.0 / 2.22e-16;
+	for (auto a : A) {
+		cout << "a = " << a << "\n";
+		cardano(a);
+		cout << endl;
+	}
+	cout << endl;
+	for (auto a : A) {
+		cout << "a = " << a << "\n";
+		double r = newton(x01, a);
+		cout <<"x0: "<<x01<<  " решение " << r << "\n";
+		r = newton(x02, a);
+		cout << "x0: " << x02 << " решение " << r << "\n";
+		r = newton(x03, a);
+		cout << "x0: " << x03 << " решение " << r << "\n";
+		cout << endl;
+	}
+
+
+}
