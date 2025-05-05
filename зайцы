@@ -98,14 +98,14 @@
 //			<< duration_quadrature.count()<<"\t"
 //			<< erf(i) << endl;
 //	}
-//
+//	cout << endl;
 //	vector<double> R = { 2, 100, 1000, 1500 };
 //	vector<double> F = { 2, 100, 1000, 1000 };
 //	double a = 0.01;
 //	cout << " Параметр a = " << a << '\n';
 //	int index = 0;
 //	for (auto r0 : R) {
-//		int f0 = F[index];
+//		double f0 = F[index];
 //		index++;
 //		cout << " r0 = " << r0 << ", f0 = " << f0 << "\n";
 //		State cur_state = { r0,f0 };
@@ -119,6 +119,7 @@
 //			cur_state = rk4_step(cur_state, t, dt, a);
 //			t += dt;
 //		}
+//		cout << endl;
 //	}
 //	cout << "\n B)\n";
 //	cout << " 1) Вымирают кролики:\n r0 = 15, f0 = 22:\n";
@@ -138,20 +139,46 @@
 //	cout << endl;
 //	cout << " r = " << cur_state.rabbits << ", f = " << cur_state.foxes << '\n';
 //
+//	cout << " 1) Вымирают лисы:\n";
+//	cur_state.rabbits = 1;
+//	cur_state.foxes = 1;
+//	t = 0;
+//	N = 50;
+//	dt = 0.1;
+//	while (true) {
+//		cout << to_string(t) << " " << to_string(cur_state.rabbits) << " " << to_string(cur_state.foxes) << '\n';
+//		cur_state = rk4_step(cur_state, t, dt, a);
+//		t += dt;
+//		if (cur_state.foxes < 1)
+//			break;
+//	}
+//	cout << endl;
+//	cout << " r = " << cur_state.rabbits << ", f = " << cur_state.foxes << '\n';
+//	cout << "№3: \n";
+//	ofstream file;
+//	file.open("B.3.txt");
+//	t = 0;
+//	N = 500;
+//	dt = 0.1;
+//	State init;
+//	init.rabbits = 0;
+//	init.foxes = 0;
+//	while (true) {
+//		init.rabbits++;
+//		init.foxes++;
+//		//cout << init.foxes << "\n";
+//		cur_state.rabbits = init.rabbits;
+//		cur_state.foxes = init.foxes;
+//		for (int i = 0; i < N; i++) {
+//			file << to_string(t) << " " << to_string(cur_state.rabbits) << " " << to_string(cur_state.foxes) << '\n';
+//			cur_state = rk4_step(cur_state, t, dt, a);
+//			t += dt;
+//			if (cur_state.foxes < 1 && cur_state.rabbits<1)
+//				break;
+//		}
+//		if (cur_state.foxes < 1 && cur_state.rabbits < 1)
+//			break;
+//	}
+//	cout << " Начальные условия r = " << init.rabbits << ", f = " << init.foxes << '\n';
 //
-//
-//	//double a = 0.01;
-//	//double r0 = 15, f0 = 22;
-//	//double dt = 0.01; // Шаг по времени
-//	//double t_end = 50.0; // Конечное время
-//	//double t = 0;
-//	//State cur_state = { r0,f0 };
-//	//cout << "times" << "\t" << "rabbits" << "\t" << "foxes" << "\n";
-//	//while (t <= t_end) {
-//	//	cout << t << "\t" << cur_state.rabbits << "\t" << cur_state.foxes << "\n";
-//	//	cur_state = rk4_step(cur_state, t, dt, a);
-//	//	t += 0.1;
-//	//	//cur_state.rabbits = max(0.0, cur_state.rabbits);
-//	//	//cur_state.foxes = max(0.0, cur_state.foxes);
-//	//}
 //}
